@@ -1,0 +1,8 @@
+<div class="flex flex-col gap-4">
+  <div>
+    <h1>METADATA</h1>
+    <p *ngFor="let item of currentlySelectedEvent?.metadata" class="flex justify-between text-white">
+      {{ item.key }}: {{ item.value }}
+    </p>
+  </div>
+</div>

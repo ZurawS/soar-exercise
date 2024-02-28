@@ -1,0 +1,17 @@
+<div class="flex justify-between w-full">
+  <div id="left-banner" class="flex flex-col max-w-[80%]">
+    <h1 class="text-white truncate font-bold">
+      Detected Multiple {{ eventsHeader }} Events
+    </h1>
+    <p class="text-slate-300 truncate">{{ currentTimeStamp }}</p>
+    <p class="text-slate-300 truncate">{{ creatorUserID || 'No User ID was provided' }}</p>
+  </div>
+  <div class="flex flex-col" id="right-banner">
+    <input placeholder="Filter (regex)" [formControl]="searchControl"
+      class="text-black px-4 py-2 border-2 border-slate-500 rounded-md" id="search_input" />
+    <div class="flex gap-2 mt-2 px-2">
+      <input id="search-input" placeholder="Search (regex)" type="checkbox" />
+      <label for="search-input" class="text-white text-lg" label>Show favourite</label>
+    </div>
+  </div>
+</div>

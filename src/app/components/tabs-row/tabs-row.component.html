@@ -1,0 +1,8 @@
+<div class="flex w-full overflow-x-auto">
+    <div *ngFor="let event of rowEvents" class="border-x border-white px-2 py-1 cursor-pointer"
+        onclick="onClick(event.id)">
+        <p class="truncate text-white">{{event.eventType}}</p>
+        <p class="truncate text-white">{{formatTimestamp(event.timestamp)}}</p>
+        <p class="truncate text-white">Click to view</p>
+    </div>
+</div>
