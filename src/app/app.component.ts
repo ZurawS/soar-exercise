@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   // [TEST DATA placeholder]
   // Because of no unique ID in "_rawDataFields" I had to create them myself
   // code related to "customId" can be removed if in real version of the application field "id" is always unique
+  // It can also be left alone since it doesn't change the way the application works
   iniitalSoarData: SoarData = testDataPlaceholder;
   soarData: SoarData | undefined;
   currentlySelectedEvent: EventDetails | undefined;
@@ -147,15 +148,36 @@ export class AppComponent implements OnInit {
       }),
     };
 
-    console.log(this.soarData.Events.length);
-    console.log(this.soarData);
-
     if (this.soarData.Events.length === 0) {
       this.currentlySelectedEvent = undefined;
     }
   }
 
-  searchControl(searchValue: string) {}
+  searchControl(searchValue: string) {
+    this.soarData = this.iniitalSoarData;
+    if (searchValue.length === 0) {
+      return;
+    }
+    const regex = new RegExp(searchValue, 'i');
+
+    this.soarData = {
+      ...this.soarData,
+      Events: this.soarData!.Events.filter((event) => {
+        const data = Object.entries(event._rawDataFields);
+        const foo = data.filter((item) => {
+          for (const key in item) {
+            if (Object.prototype.hasOwnProperty.call(item, key)) {
+              if (regex.test(key) || regex.test(item[key])) {
+                return true;
+              }
+            }
+          }
+          return false;
+        });
+        return foo.length > 0;
+      }),
+    } as SoarData;
+  }
 
   private getEventWithId(id: string) {
     return this.iniitalSoarData.Events.find(
