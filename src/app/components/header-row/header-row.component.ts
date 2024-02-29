@@ -20,6 +20,7 @@ export class HeaderRowComponent implements AfterViewInit {
   @Input() creatorUserID: string = '';
   @Input() eventsHeader: string = '';
   @Output() searchValueChange = new EventEmitter<string>();
+  @Output() toggleFavourites = new EventEmitter<boolean>();
   readonly searchControl = new FormControl();
 
   get currentTimeStamp() {
@@ -32,5 +33,9 @@ export class HeaderRowComponent implements AfterViewInit {
       .subscribe((value) => {
         this.searchValueChange.emit(value);
       });
+  }
+
+  toggleClicked(inputValue: any) {
+    this.toggleFavourites.emit(inputValue.target.checked);
   }
 }

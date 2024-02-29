@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  HostBinding,
   Input,
   Output,
 } from '@angular/core';
@@ -16,6 +17,14 @@ import { EventDetails } from '../../models/eventsData.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailsRowComponent {
-  @Output() chooseAlert: EventEmitter<string> = new EventEmitter<string>();
+  @HostBinding('style.overflow-y') private readonly overflow: string = 'auto';
+  @Output() addToFovourites: EventEmitter<string> = new EventEmitter<string>();
   @Input() currentlySelectedEvent: EventDetails | undefined;
+  @Input() isFavourite: boolean = false;
+
+  addFavourite() {
+    if (this.currentlySelectedEvent) {
+      this.addToFovourites.emit(this.currentlySelectedEvent.customId);
+    }
+  }
 }

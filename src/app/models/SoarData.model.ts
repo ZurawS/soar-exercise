@@ -1,7 +1,6 @@
 export interface SoarData {
-  CreatorUserId: null;
+  CreatorUserId: string | null;
   Events: {
-    isFavourite?: boolean;
     _fields: {
       BaseEventIds: string[];
       ParentEventId: number;

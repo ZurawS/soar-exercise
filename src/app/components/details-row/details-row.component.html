@@ -1,8 +1,54 @@
-<div class="flex flex-col gap-4">
+<div class="flex h-full flex-col gap-4">
+  <div class="flex justify-end w-full mt-4 -mb-4 cursor-pointer" (click)="addFavourite()">
+    <p>{{isFavourite ? "Remove from" : "Add to"}} favourites</p>
+  </div>
   <div>
-    <h1>METADATA</h1>
-    <p *ngFor="let item of currentlySelectedEvent?.metadata" class="flex justify-between text-white">
-      {{ item.key }}: {{ item.value }}
-    </p>
+    <h1 class=" font-medium border-b border-slate-500 w-full text-xl">METADATA</h1>
+    <div *ngFor="let item of currentlySelectedEvent?.metadata" class="flex text-white gap-4">
+      <div class="w-80 truncate font-medium">{{ item.key }}:</div>
+      <div class="truncate text-slate-400">{{ item.value }}</div>
+    </div>
+  </div>
+  <div>
+    <h1 class="font-medium border-b border-slate-500 w-full text-xl">PRINCIPAL</h1>
+    <div *ngFor="let item of currentlySelectedEvent?.metadata" class="flex text-white gap-4">
+      <div class="w-80 truncate font-medium">{{ item.key }}:</div>
+      <div class="truncate text-slate-400">{{ item.value }}</div>
+    </div>
+  </div>
+  <div>
+    <h1 class="font-medium border-b border-slate-500 w-full text-xl">TARGET</h1>
+    <div *ngFor="let item of currentlySelectedEvent?.metadata" class="flex text-white gap-4">
+      <div class="w-80 truncate font-medium">{{ item.key }}:</div>
+      <div class="truncate text-slate-400">{{ item.value }}</div>
+    </div>
+  </div>
+  <div>
+    <h1 class="font-medium border-b border-slate-500 w-full text-xl">OBSERVER</h1>
+    <div *ngFor="let item of currentlySelectedEvent?.metadata" class="flex text-white gap-4">
+      <div class="w-80 truncate font-medium">{{ item.key }}:</div>
+      <div class="truncate text-slate-400">{{ item.value }}</div>
+    </div>
+  </div>
+  <div>
+    <h1 class="font-medium border-b border-slate-500 w-full text-xl">ABOUT</h1>
+    <div *ngFor="let item of currentlySelectedEvent?.metadata" class="flex text-white gap-4">
+      <div class="w-80 truncate font-medium">{{ item.key }}:</div>
+      <div class="truncate text-slate-400">{{ item.value }}</div>
+    </div>
+  </div>
+  <div>
+    <h1 class="font-medium border-b border-slate-500 w-full text-xl">SECURITYRESULT</h1>
+    <div *ngFor="let item of currentlySelectedEvent?.metadata" class="flex text-white gap-4">
+      <div class="w-80 truncate font-medium">{{ item.key }}:</div>
+      <div class="truncate text-slate-400">{{ item.value }}</div>
+    </div>
+  </div>
+  <div>
+    <h1 class="font-medium border-b border-slate-500 w-full text-xl">EXTENSIONS</h1>
+    <div *ngFor="let item of currentlySelectedEvent?.metadata" class="flex text-white gap-4">
+      <div class="w-80 truncate font-medium">{{ item.key }}:</div>
+      <div class="truncate text-slate-400">{{ item.value }}</div>
+    </div>
   </div>
 </div>

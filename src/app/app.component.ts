@@ -24,61 +24,73 @@ import { KeyValue } from '@angular/common';
 export class AppComponent implements OnInit {
   // [TEST DATA placeholder]
   // Because of no unique ID in "_rawDataFields" I had to create them myself
-  soarData: SoarData = testDataPlaceholder;
+  // code related to "customId" can be removed if in real version of the application field "id" is always unique
+  iniitalSoarData: SoarData = testDataPlaceholder;
+  soarData: SoarData | undefined;
   currentlySelectedEvent: EventDetails | undefined;
+  isFavouritesView: boolean = false;
 
   get eventTypeHeader(): string {
-    const eventsMap = new Map<string, number>();
-    this.soarData.Events.map((event) => {
-      if (eventsMap.has(event._rawDataFields['event_metadata_eventType'])) {
-        eventsMap.set(
-          event._rawDataFields['event_metadata_eventType'],
-          (eventsMap.get(event._rawDataFields['event_metadata_eventType']) ||
-            0) + 1
-        );
-      } else {
-        eventsMap.set(event._rawDataFields['event_metadata_eventType'], 1);
-      }
+    const eventsKeysSet = new Set<string>();
+    this.soarData?.Events.forEach((event) => {
+      eventsKeysSet.add(event._rawDataFields['event_metadata_eventType']);
     });
-    return this.findMaxKeyInMap(eventsMap) || '';
+    return Array.from(eventsKeysSet).join(', ');
   }
 
   get rowEvents(): RowEvent[] {
-    const rowEventsArray: RowEvent[] = this.soarData.Events.map((event) => {
+    const rowEventsArray = this.soarData?.Events.map((event) => {
       const data = event._rawDataFields;
       return {
         id: data['id'],
+        customId: data['customId'],
         eventType: data['event_metadata_eventType'],
         timestamp: data['event_metadata_eventTimestamp'],
       };
     });
-    return rowEventsArray;
+    return rowEventsArray || [];
+  }
+
+  get isFavourite() {
+    if (!this.currentlySelectedEvent?.customId) {
+      return false;
+    }
+    const event = this.soarData?.Events.find(
+      (event) =>
+        event._rawDataFields['customId'] ===
+        this.currentlySelectedEvent?.customId
+    );
+
+    return event?._rawDataFields['isFovourite'] === 'true';
   }
 
   ngOnInit(): void {
-    this.currentlySelectedEvent = this.formatRawDataFields(
-      this.soarData.Events[0]._rawDataFields
-    );
-    this.soarData = {
-      ...this.soarData,
+    this.iniitalSoarData = {
+      ...this.iniitalSoarData,
       Events: [
-        ...this.soarData.Events,
-        ...this.soarData.Events.map((event, index) => {
+        ...this.iniitalSoarData.Events.map((event, index) => {
           return {
             ...event,
             _rawDataFields: {
               ...event._rawDataFields,
               customId: event._rawDataFields['id'] + index,
+              isFavourite: 'false',
             },
           };
         }),
       ],
     };
+
+    this.soarData = this.iniitalSoarData;
+
+    this.currentlySelectedEvent = this.formatRawDataFields(
+      this.soarData?.Events[0]._rawDataFields
+    );
   }
 
   displayEventDetails(id: string) {
-    const rawDataFields = this.soarData.Events.find(
-      (event) => event._rawDataFields['id'] === id
+    const rawDataFields = this.soarData?.Events.find(
+      (event) => event._rawDataFields['customId'] === id
     )?._rawDataFields;
 
     if (!rawDataFields) {
@@ -88,13 +100,57 @@ export class AppComponent implements OnInit {
     this.currentlySelectedEvent = this.formatRawDataFields(rawDataFields);
   }
 
-  searchControl(searchValue: string) {
-    console.log({ searchValue });
+  toggleFovourites(customId: string) {
+    if (!this.currentlySelectedEvent) {
+      return;
+    }
+
+    const event = this.getEventWithId(customId);
+
+    if (event) {
+      event._rawDataFields['isFovourite'] =
+        event._rawDataFields['isFovourite'] === 'true' ? 'false' : 'true';
+    }
+
+    if (this.isFavouritesView) {
+      this.soarData = {
+        ...this.soarData,
+        Events: this.soarData!.Events.filter((event) => {
+          return event._rawDataFields['customId'] !== customId;
+        }),
+      } as SoarData;
+    }
+  }
+
+  displayFavourites(inputValue: boolean) {
+    if (!inputValue) {
+      this.soarData = this.iniitalSoarData;
+      this.isFavouritesView = false;
+      return;
+    }
+
+    this.isFavouritesView = true;
+
+    this.soarData = {
+      ...this.iniitalSoarData,
+      Events: this.iniitalSoarData.Events.filter((event) => {
+        return event._rawDataFields['isFovourite'] === 'true';
+      }),
+    };
+  }
+
+  searchControl(searchValue: string) {}
+
+  private getEventWithId(id: string) {
+    return this.iniitalSoarData.Events.find(
+      (event) => event._rawDataFields['customId'] === id
+    );
   }
 
   private formatRawDataFields(rawDataFields: KeyValueMap): EventDetails {
     const customRawDataFields = {
       id: rawDataFields['id'],
+      customId: rawDataFields['customId'],
       isFovourite: rawDataFields['isFovourite'] === 'true',
       metadata: this.findValuesForKey(rawDataFields, 'metadata'),
       principal: this.findValuesForKey(rawDataFields, 'principal'),
@@ -104,8 +160,6 @@ export class AppComponent implements OnInit {
       securityResult: this.findValuesForKey(rawDataFields, 'securityResult'),
       extensions: this.findValuesForKey(rawDataFields, 'extensions'),
     };
-
-    console.log(customRawDataFields);
 
     return customRawDataFields;
   }
@@ -120,22 +174,5 @@ export class AppComponent implements OnInit {
         key: data[0].split('event_' + key + '_')[1],
         value: data[1],
       }));
-  }
-
-  private findMaxKeyInMap(map: Map<string, number>): string | undefined {
-    let maxKey: string | undefined;
-    let maxValue: number = Number.MIN_SAFE_INTEGER;
-
-    Array.from(map.entries()).forEach((value) => {
-      const currentValue: number | undefined = map.get(value[0]);
-      if (currentValue) {
-        if (currentValue > maxValue) {
-          maxKey = value[0];
-          maxValue = currentValue;
-        }
-      }
-    });
-
-    return maxKey;
   }
 }
