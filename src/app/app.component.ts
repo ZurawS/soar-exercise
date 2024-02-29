@@ -106,8 +106,10 @@ export class AppComponent implements OnInit {
     }
 
     const event = this.getEventWithId(customId);
+    let isFavourite = false;
 
     if (event) {
+      isFavourite = event._rawDataFields['isFovourite'] === 'true';
       event._rawDataFields['isFovourite'] =
         event._rawDataFields['isFovourite'] === 'true' ? 'false' : 'true';
     }
@@ -120,12 +122,19 @@ export class AppComponent implements OnInit {
         }),
       } as SoarData;
     }
+
+    if (isFavourite && this.isFavouritesView) {
+      this.currentlySelectedEvent = undefined;
+    }
   }
 
   displayFavourites(inputValue: boolean) {
     if (!inputValue) {
       this.soarData = this.iniitalSoarData;
       this.isFavouritesView = false;
+      this.currentlySelectedEvent = this.formatRawDataFields(
+        this.soarData?.Events[0]._rawDataFields
+      );
       return;
     }
 
@@ -137,6 +146,13 @@ export class AppComponent implements OnInit {
         return event._rawDataFields['isFovourite'] === 'true';
       }),
     };
+
+    console.log(this.soarData.Events.length);
+    console.log(this.soarData);
+
+    if (this.soarData.Events.length === 0) {
+      this.currentlySelectedEvent = undefined;
+    }
   }
 
   searchControl(searchValue: string) {}

@@ -1,4 +1,6 @@
 <div class="flex w-full overflow-x-auto">
+    <div class="my-4 text-xl font-bold" *ngIf="!rowEvents.length">Sorry, no data to display. Please change filters.
+    </div>
     <div *ngFor="let event of rowEvents" class="border-x border-white px-2 py-1 cursor-pointer"
         (click)="onClick(event.customId)">
         <p class="truncate text-white">{{event.eventType}}</p>

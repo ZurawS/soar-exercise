@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,7 +11,7 @@ import { RowEvent } from '../../models/eventsData.model';
 @Component({
   selector: 'app-tabs-row',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, NgIf],
   templateUrl: './tabs-row.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

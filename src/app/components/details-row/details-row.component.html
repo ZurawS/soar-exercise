@@ -1,5 +1,6 @@
 <div class="flex h-full flex-col gap-4">
-  <div class="flex justify-end w-full mt-4 -mb-4 cursor-pointer" (click)="addFavourite()">
+  <div *ngIf="!!currentlySelectedEvent" class="flex justify-end w-full mt-4 -mb-4 cursor-pointer"
+    (click)="addFavourite()">
     <p>{{isFavourite ? "Remove from" : "Add to"}} favourites</p>
   </div>
   <div>

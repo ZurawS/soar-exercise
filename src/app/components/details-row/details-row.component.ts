@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,7 +12,7 @@ import { EventDetails } from '../../models/eventsData.model';
 @Component({
   selector: 'app-details-row',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, NgIf],
   templateUrl: './details-row.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
